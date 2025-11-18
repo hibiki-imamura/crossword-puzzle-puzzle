@@ -1,8 +1,4 @@
 /* --- 基本設定 --- */
-:root {
-    --cell-size: 50px;
-}
-
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
@@ -97,8 +93,10 @@ h3 {
 /* --- 盤面エリア --- */
 #grid-container {
     display: grid;
-    grid-template-columns: repeat(5, var(--cell-size));
-    grid-template-rows: repeat(5, var(--cell-size));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    aspect-ratio: 1 / 1;
+    width: min(420px, 100%);
     
     /* 枠線をなくし、背景色と隙間を設定 (2048/Wordle風) */
     border: none;
@@ -109,8 +107,9 @@ h3 {
 }
 
 .grid-cell {
-    width: var(--cell-size);
-    height: var(--cell-size);
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
     box-sizing: border-box; 
     
     /* マスの枠線をなくす */
@@ -191,14 +190,19 @@ h3 {
 }
 
 @media (max-width: 640px) {
-    :root {
-        --cell-size: min(64px, calc((100vw - 48px) / 5));
-    }
-
     body {
         align-items: stretch;
         padding: 0 16px 40px;
         margin-top: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    h3 {
+        font-size: 18px;
     }
 
     .puzzle-container {
@@ -208,6 +212,7 @@ h3 {
 
     #grid-container {
         width: 100%;
+        max-width: none;
         justify-content: center;
         padding: 6px;
         gap: 6px;
@@ -217,11 +222,35 @@ h3 {
     .current-status,
     .result-card {
         width: 100%;
+        font-size: 16px;
     }
 
     .controls {
         width: 100%;
         justify-content: center;
+        flex-direction: column;
+    }
+
+    .controls button,
+    #next-problem-btn,
+    #rule-modal-btn,
+    #problem-menu-toggle,
+    #problem-jump-btn {
+        width: 100%;
+        font-size: 18px;
+        padding: 14px 18px;
+    }
+
+    .menu-content,
+    .menu-section-header,
+    .menu-item,
+    .menu-jump label {
+        font-size: 16px;
+    }
+
+    .jump-form input {
+        font-size: 16px;
+        padding: 10px 12px;
     }
 
     .top-actions {
@@ -232,6 +261,64 @@ h3 {
     .problem-info {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    body {
+        align-items: stretch;
+        padding: 0 16px 40px;
+    }
+
+    h1 {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    #grid-container {
+        width: 100%;
+        max-width: none;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .objective,
+    .current-status,
+    .result-card,
+    .controls,
+    .problem-info {
+        width: 100%;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .controls button,
+    #next-problem-btn,
+    #rule-modal-btn,
+    #problem-menu-toggle,
+    #problem-jump-btn {
+        width: 100%;
+        font-size: 18px;
+        padding: 14px 18px;
+    }
+
+    .menu-content,
+    .menu-section-header,
+    .menu-item,
+    .menu-jump label {
+        font-size: 16px;
+    }
+
+    .jump-form input {
+        font-size: 16px;
+        padding: 10px 12px;
     }
 }
 
