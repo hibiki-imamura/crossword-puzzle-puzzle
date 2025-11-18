@@ -1,4 +1,8 @@
 /* --- 基本設定 --- */
+:root {
+    --cell-size: 50px;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
@@ -93,8 +97,8 @@ h3 {
 /* --- 盤面エリア --- */
 #grid-container {
     display: grid;
-    grid-template-columns: repeat(5, 50px);
-    grid-template-rows: repeat(5, 50px);
+    grid-template-columns: repeat(5, var(--cell-size));
+    grid-template-rows: repeat(5, var(--cell-size));
     
     /* 枠線をなくし、背景色と隙間を設定 (2048/Wordle風) */
     border: none;
@@ -105,8 +109,8 @@ h3 {
 }
 
 .grid-cell {
-    width: 50px;
-    height: 50px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     box-sizing: border-box; 
     
     /* マスの枠線をなくす */
@@ -184,6 +188,51 @@ h3 {
 .result-label {
     font-weight: bold;
     margin-bottom: 6px;
+}
+
+@media (max-width: 640px) {
+    :root {
+        --cell-size: min(64px, calc((100vw - 48px) / 5));
+    }
+
+    body {
+        align-items: stretch;
+        padding: 0 16px 40px;
+        margin-top: 20px;
+    }
+
+    .puzzle-container {
+        width: 100%;
+        gap: 16px;
+    }
+
+    #grid-container {
+        width: 100%;
+        justify-content: center;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .objective,
+    .current-status,
+    .result-card {
+        width: 100%;
+    }
+
+    .controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .top-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .problem-info {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 #next-problem-btn {
