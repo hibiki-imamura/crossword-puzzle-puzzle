@@ -1,0 +1,471 @@
+/* --- 基本設定 --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F8F8F8; /* わずかにグレーな背景 */
+    color: #333;
+    margin-top: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #444;
+}
+
+h3 {
+    font-size: 16px;
+    border-bottom: 2px solid #EEE;
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+
+.global-controls {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 900;
+}
+
+.top-actions {
+    margin: 10px 0 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#rule-modal-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    background-color: #3B82F6;
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+#rule-modal-btn:hover {
+    background-color: #2563EB;
+}
+
+.problem-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    font-weight: bold;
+}
+
+#problem-menu-toggle {
+    border: none;
+    background-color: #1F2937;
+    color: #fff;
+    border-radius: 6px;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+#problem-menu-toggle.active {
+    background-color: #B91C1C;
+}
+
+.modal-close:hover {
+    background-color: #E5E7EB;
+    border-radius: 50%;
+}
+/* --- コンテナ類 --- */
+.puzzle-container {
+    display: flex;
+    flex-direction: column; /* スマホも意識して縦積みに変更 */
+    align-items: center; /* 中央揃え */
+    gap: 20px;
+}
+
+/* --- 盤面エリア --- */
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 50px);
+    
+    /* 枠線をなくし、背景色と隙間を設定 (2048/Wordle風) */
+    border: none;
+    background-color: #DCDCDC; /* 隙間の色になる */
+    padding: 8px; /* 盤面の外側の余白 */
+    gap: 8px; /* マスとマスの隙間 */
+    border-radius: 8px; /* 盤面全体の角丸 */
+}
+
+.grid-cell {
+    width: 50px;
+    height: 50px;
+    box-sizing: border-box; 
+    
+    /* マスの枠線をなくす */
+    border: none; 
+    background-color: #FFFFFF; /* 白マス */
+    cursor: pointer;
+    user-select: none; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* (r,c)のデバッグ文字を非表示化 */
+    font-size: 0; 
+    color: transparent;
+
+    border-radius: 5px; /* マスの角丸 */
+    
+    /* 色が変わるときの滑らかなアニメーション */
+    transition: background-color 0.1s ease-in-out; 
+}
+
+/* 黒マスのスタイル */
+.grid-cell.black {
+    background-color: #787C7E; /* Wordleのグレー */
+}
+
+/* --- 情報エリア --- */
+.objective, .current-status {
+    width: 300px; /* 横幅を盤面に合わせる */
+    background-color: #FFFFFF;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* 影はごく薄く */
+    box-sizing: border-box; /* パディングを含めて300pxに */
+}
+
+.objective p, .current-status p {
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word; /* カギ番号が多くても折り返す */
+}
+
+.result-card {
+    width: 300px;
+    background-color: #FFFFFF;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    display: none;
+}
+
+.result-card.show {
+    display: block;
+}
+
+.result-card #score-details {
+    display: none;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.result-card.has-details #score-details {
+    display: block;
+}
+
+.result-message {
+    min-height: 1.5em;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.result-label {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+#next-problem-btn {
+    margin-top: 10px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    
+    /* Wordleの緑ボタン風 */
+    background-color: #6AAA64; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    
+    transition: background-color 0.2s;
+}
+
+#next-problem-btn:hover {
+    background-color: #5A9A54; /* ホバー時に少し暗く */
+}
+
+/* --- 既存のスタイルに追加・変更してください --- */
+
+/* ボタンを横並びにするためのコンテナ */
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 採点ボタン */
+#check-btn {
+    background-color: #538D4E; /* Wordle緑 */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #3a6336; /* 立体感 */
+    transition: transform 0.1s;
+}
+
+#check-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+/* リトライボタン */
+#retry-btn {
+    background-color: #787C7E;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* マスの中に表示する数字 */
+.clue-number {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    pointer-events: none; /* クリックを邪魔しない */
+    
+    /* アニメーション: ふわっと現れる */
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 黒マスの上の数字は見えない（あるいは白くする？基本黒マスに番号はつかないが念のため） */
+.grid-cell.black .clue-number {
+    display: none;
+}
+
+/* マス自体の設定（relativeにする） */
+.grid-cell {
+    position: relative; /* 中の絶対配置要素の基準点 */
+    /* ...既存のスタイル... */
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 結果表示の装飾 */
+.match { color: #538D4E; font-weight: bold; }
+.mismatch { color: #B59F3B; text-decoration: line-through; }
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    position: relative;
+    line-height: 1.6;
+}
+
+.modal-content ol {
+    padding-left: 20px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.menu-overlay.show {
+    display: flex;
+}
+
+.menu-content {
+    width: 320px;
+    max-height: 100%;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.menu-header .modal-close {
+    position: static;
+}
+
+.menu-jump {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jump-form {
+    display: flex;
+    gap: 8px;
+}
+
+.jump-form input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #D1D5DB;
+    font-size: 14px;
+}
+
+.jump-form input.invalid {
+    border-color: #DC2626;
+    background-color: #FEF2F2;
+}
+
+.jump-form button {
+    padding: 8px 14px;
+    background-color: #538D4E;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.menu-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-section {
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.menu-section-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: #F3F4F6;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.menu-section-header .chevron {
+    transition: transform 0.2s;
+}
+
+.menu-section.collapsed .menu-section-header .chevron {
+    transform: rotate(-90deg);
+}
+
+.menu-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+}
+
+.menu-section-content.collapsed {
+    display: none;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #E5E7EB;
+    background-color: #F9FAFB;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 14px;
+}
+
+.menu-item:hover {
+    background-color: #EEF2FF;
+    border-color: #C7D2FE;
+}
+
+.menu-item.current {
+    border-color: #538D4E;
+    background-color: #E3F5E1;
+}

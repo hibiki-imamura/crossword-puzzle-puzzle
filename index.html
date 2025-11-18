@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>クロスワードパズルパズル 5x5</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="global-controls">
+        <button id="problem-menu-toggle" aria-label="問題一覧">☰</button>
+    </div>
+
+    <h1>クロスワードパズルパズル 5x5</h1>
+    <div class="top-actions">
+        <button id="rule-modal-btn">ルール説明</button>
+        <div class="problem-info">
+            <span id="problem-number">第1問</span>
+        </div>
+    </div>
+
+    <div class="puzzle-container">
+        <div class="objective">
+            <h3>お題</h3>
+            <p><strong>【タテのカギ】:</strong> <span id="tate-objective"></span></p>
+            <p><strong>【ヨコのカギ】:</strong> <span id="yoko-objective"></span></p>
+        </div>
+        
+        <div id="grid-container"></div>
+        
+        <div class="controls">
+            <button id="check-btn">判定</button>
+            <button id="retry-btn" style="display:none;">修正する</button>
+        </div>
+
+        <div id="result-card" class="result-card" aria-live="polite" aria-hidden="true">
+            <h3>判定結果</h3>
+            <p id="clear-message" class="result-message"></p>
+            <div id="score-details">
+                <p class="result-label">あなたの盤面のカギ</p>
+                <p>【タテのカギ】 <span id="tate-result"></span></p>
+                <p>【ヨコのカギ】 <span id="yoko-result"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <button id="next-problem-btn" style="display:none;">次へ</button>
+
+    <div id="rule-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rule-modal-title">
+            <button id="rule-modal-close" class="modal-close" aria-label="閉じる">×</button>
+            <h2 id="rule-modal-title">ルール説明</h2>
+            <p>盤面を判定する前に、次の条件を満たしているか確認してください。</p>
+            <ol>
+                <li>白マスはすべて上下左右に連結している必要があります（孤立した白マスは不可）。</li>
+                <li>盤面の最上段・最下段・最左列・最右列のいずれも、すべてが黒マスで埋まってはいけません。</li>
+            </ol>
+            <p>条件を満たしたら「判定」ボタンで正誤判定が始まります。</p>
+        </div>
+    </div>
+
+    <div id="problem-menu" class="menu-overlay" aria-hidden="true">
+        <div class="menu-content" role="dialog" aria-modal="true" aria-labelledby="problem-menu-title">
+            <div class="menu-header">
+                <h2 id="problem-menu-title">問題一覧</h2>
+                <button id="problem-menu-close" class="modal-close" aria-label="閉じる">×</button>
+            </div>
+            <div class="menu-jump">
+                <label for="problem-jump-input">問題番号へジャンプ</label>
+                <div class="jump-form">
+                    <input type="number" id="problem-jump-input" min="1" placeholder="例: 123">
+                    <button type="button" id="problem-jump-btn">移動</button>
+                </div>
+            </div>
+            <div id="problem-menu-sections" class="menu-sections"></div>
+        </div>
+    </div>
+
+    <script src="problem.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
