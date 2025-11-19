@@ -324,6 +324,11 @@ h3 {
     #problem-random-btn {
         background-color: #2563EB;
     }
+
+    .reset-progress-btn {
+        font-size: clamp(15px, 4vw, 19px);
+        padding: 12px;
+    }
 }
 
 
@@ -546,6 +551,31 @@ h3 {
     flex: 1;
 }
 
+#problem-random-btn {
+    background-color: #2563EB;
+}
+
+#problem-random-btn:hover {
+    background-color: #1D4ED8;
+}
+
+.reset-progress-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 14px;
+    border: 1px solid #DC2626;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #DC2626;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.reset-progress-btn:hover {
+    background-color: #FEE2E2;
+}
+
 .menu-sections {
     display: flex;
     flex-direction: column;
@@ -611,6 +641,23 @@ h3 {
 .menu-item.current {
     border-color: #538D4E;
     background-color: #E3F5E1;
+}
+
+.menu-item .menu-label {
+    flex: 1;
+    text-align: left;
+}
+
+.menu-check {
+    margin-left: 8px;
+    color: #538D4E;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.menu-check.visible {
+    opacity: 1;
 }
 
 

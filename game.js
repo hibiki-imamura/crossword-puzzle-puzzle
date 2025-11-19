@@ -27,9 +27,12 @@ const problemMenuSections = document.getElementById('problem-menu-sections');
 const problemJumpInput = document.getElementById('problem-jump-input');
 const problemJumpBtn = document.getElementById('problem-jump-btn');
 const problemRandomBtn = document.getElementById('problem-random-btn');
+const problemResetBtn = document.getElementById('problem-reset-btn');
 let overlayLockCount = 0;
 let problemMenuButtons = [];
 let problemMenuSectionMeta = [];
+const PROGRESS_STORAGE_KEY = 'crosswordClearedProblems';
+let clearedProblems = loadClearedProblems();
 
 /**
  * カギ番号リストと、番号を表示すべき座標マップを返す
@@ -101,6 +104,48 @@ function unlockScroll() {
     if (overlayLockCount === 0) {
         document.body.style.overflow = '';
     }
+}
+
+function loadClearedProblems() {
+    try {
+        const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+        if (!raw) return new Set();
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+            return new Set(parsed.filter(n => Number.isInteger(n)));
+        }
+    } catch (err) {
+        console.warn('Failed to load cleared problems', err);
+    }
+    return new Set();
+}
+
+function saveClearedProblems() {
+    try {
+        localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(Array.from(clearedProblems)));
+    } catch (err) {
+        console.warn('Failed to save cleared problems', err);
+    }
+}
+
+function markProblemCleared(index) {
+    if (clearedProblems.has(index)) {
+        updateProblemMenuEntry(index);
+        return;
+    }
+    clearedProblems.add(index);
+    saveClearedProblems();
+    updateProblemMenuEntry(index);
+}
+
+function resetClearedProblems() {
+    clearedProblems.clear();
+    try {
+        localStorage.removeItem(PROGRESS_STORAGE_KEY);
+    } catch (err) {
+        console.warn('Failed to reset cleared problems', err);
+    }
+    refreshProblemMenuEntries();
 }
 
 function checkWhiteConnectivity(board) {
@@ -295,6 +340,7 @@ function showResult(info) {
         clearMsgEl.style.color = "#538D4E";
         nextBtn.style.display = 'block';
         retryBtn.style.display = 'none';
+        markProblemCleared(currentProblemIndex);
     } else {
         // 不正解
         clearMsgEl.textContent = "未完成";
@@ -407,6 +453,26 @@ function jumpToRandomProblem() {
     loadProblem(randomIndex);
 }
 
+function handleResetProgress() {
+    const confirmed = window.confirm('クリア状況をリセットしますか？');
+    if (!confirmed) return;
+    resetClearedProblems();
+}
+
+function updateProblemMenuEntry(index) {
+    const entry = problemMenuButtons[index];
+    if (!entry) return;
+    const isCurrent = index === currentProblemIndex;
+    const isCleared = clearedProblems.has(index);
+    entry.button.classList.toggle('current', isCurrent);
+    entry.button.classList.toggle('cleared', isCleared);
+    entry.checkEl.classList.toggle('visible', isCleared);
+}
+
+function refreshProblemMenuEntries() {
+    problemMenuButtons.forEach((_, index) => updateProblemMenuEntry(index));
+}
+
 function populateProblemMenu() {
     if (!problemMenuSections) return;
     problemMenuSections.innerHTML = '';
@@ -443,13 +509,26 @@ function populateProblemMenu() {
             const button = document.createElement('button');
             button.className = 'menu-item';
             button.type = 'button';
-            button.innerHTML = `<span>第${index + 1}問</span><span>(${PROBLEMS[index].tate.length}x${PROBLEMS[index].yoko.length})</span>`;
+
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'menu-label';
+            labelSpan.textContent = `第${index + 1}問`;
+
+            const checkSpan = document.createElement('span');
+            checkSpan.className = 'menu-check';
+            checkSpan.textContent = '✓';
+            checkSpan.setAttribute('aria-hidden', 'true');
+
+            button.appendChild(labelSpan);
+            button.appendChild(checkSpan);
+
             button.addEventListener('click', () => {
                 closeProblemMenu();
                 loadProblem(index);
             });
             contentEl.appendChild(button);
-            problemMenuButtons[index] = button;
+            problemMenuButtons[index] = { button, checkEl: checkSpan };
+            updateProblemMenuEntry(index);
         }
 
         sectionEl.appendChild(headerBtn);
@@ -461,16 +540,14 @@ function populateProblemMenu() {
     if (problemJumpInput) {
         problemJumpInput.setAttribute('max', PROBLEMS.length);
     }
+    refreshProblemMenuEntries();
 }
 
 function updateProblemIndicators() {
     if (problemNumberEl) {
         problemNumberEl.textContent = `第${currentProblemIndex + 1}問`;
     }
-    problemMenuButtons.forEach((button, index) => {
-        if (!button) return;
-        button.classList.toggle('current', index === currentProblemIndex);
-    });
+    refreshProblemMenuEntries();
     problemMenuSectionMeta.forEach(meta => {
         if (currentProblemIndex >= meta.start && currentProblemIndex < meta.end) {
             meta.sectionEl.classList.remove('collapsed');
@@ -502,6 +579,9 @@ if (problemJumpBtn) {
 }
 if (problemRandomBtn) {
     problemRandomBtn.addEventListener('click', jumpToRandomProblem);
+}
+if (problemResetBtn) {
+    problemResetBtn.addEventListener('click', handleResetProgress);
 }
 if (problemJumpInput) {
     problemJumpInput.addEventListener('keydown', (event) => {
