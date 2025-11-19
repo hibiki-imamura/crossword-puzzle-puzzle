@@ -27,6 +27,7 @@ const problemMenuSections = document.getElementById('problem-menu-sections');
 const problemJumpInput = document.getElementById('problem-jump-input');
 const problemJumpBtn = document.getElementById('problem-jump-btn');
 const problemRandomBtn = document.getElementById('problem-random-btn');
+const resetBoardBtn = document.getElementById('reset-board-btn');
 const problemResetBtn = document.getElementById('problem-reset-btn');
 let overlayLockCount = 0;
 let problemMenuButtons = [];
@@ -265,7 +266,7 @@ function onCellClick(r, c, cellEl) {
  */
 async function startCheck() {
     if (isLocked) return;
-
+    
     const validation = validateBoard(boardState);
     if (!validation.valid) {
         showResultCard(false);
@@ -277,6 +278,9 @@ async function startCheck() {
 
     isLocked = true; // 操作ロック
     checkBtn.style.display = 'none';
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = 'none';
+    }
     
     // 1. 盤面の数字を全消去
     document.querySelectorAll('.clue-number').forEach(el => el.remove());
@@ -349,6 +353,9 @@ function showResult(info) {
         clearMsgEl.style.color = "#B59F3B";
         retryBtn.style.display = 'inline-block'; // 修正ボタンを表示
     }
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = 'none';
+    }
 }
 
 /**
@@ -359,9 +366,15 @@ function retry() {
     hideResultCard();
     retryBtn.style.display = 'none';
     checkBtn.style.display = 'inline-block';
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = 'inline-block';
+    }
     clearMsgEl.textContent = "";
     gridContainer.classList.remove('animate-clear');
     document.querySelectorAll('.grid-cell.square').forEach(cell => cell.classList.remove('square'));
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = '';
+    }
     
     // 数字を消す
     document.querySelectorAll('.clue-number').forEach(el => el.remove());
@@ -395,8 +408,21 @@ function initializeBoard() {
     nextBtn.style.display = 'none';
     retryBtn.style.display = 'none';
     checkBtn.style.display = 'inline-block';
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = 'inline-block';
+    }
     clearMsgEl.textContent = "";
     isLocked = false;
+}
+
+function resetBoardState() {
+    for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+            boardState[r][c] = 1;
+        }
+    }
+    document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('black', 'square'));
+    document.querySelectorAll('.clue-number').forEach(el => el.remove());
 }
 
 function loadProblem(index) {
@@ -408,6 +434,9 @@ function loadProblem(index) {
     updateProblemIndicators();
     gridContainer.classList.remove('animate-clear');
     document.querySelectorAll('.grid-cell.square').forEach(cell => cell.classList.remove('square'));
+    if (resetBoardBtn) {
+        resetBoardBtn.style.display = 'inline-block';
+    }
 }
 
 function openRuleModal() {
@@ -585,6 +614,20 @@ if (problemJumpBtn) {
 }
 if (problemRandomBtn) {
     problemRandomBtn.addEventListener('click', jumpToRandomProblem);
+}
+if (resetBoardBtn) {
+    resetBoardBtn.addEventListener('click', () => {
+        if (!window.confirm('盤面をリセットしますか？')) return;
+        isLocked = false;
+        resetBoardState();
+        hideResultCard();
+        retryBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        checkBtn.style.display = 'inline-block';
+        resetBoardBtn.style.display = 'inline-block';
+        clearMsgEl.textContent = "";
+        gridContainer.classList.remove('animate-clear');
+    });
 }
 if (problemResetBtn) {
     problemResetBtn.addEventListener('click', handleResetProgress);

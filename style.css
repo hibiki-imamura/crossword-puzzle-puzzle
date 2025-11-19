@@ -108,7 +108,7 @@ h3 {
     padding: 8px;
     gap: 8px;
     border-radius: 8px;
-    transition: border-radius 0.3s ease;
+    transition: border-radius 0.3s ease, gap 0.3s ease;
 }
 
 
@@ -143,6 +143,22 @@ h3 {
 .grid-cell.black {
     background-color: #787C7E; /* Wordleのグレー */
 }
+
+#grid-container.animate-clear .grid-cell.black {
+    animation: cellDarken 0.6s ease forwards;
+}
+
+@keyframes cellDarken {
+    0% {
+        background-color: #787C7E;
+    }
+    33% {
+        background-color: #898D8F;
+    }
+    100% {
+        background-color: #333;
+    }
+}    
 
 /* --- 情報エリア --- */
 .objective, .current-status {
@@ -242,7 +258,8 @@ h3 {
     #next-problem-btn,
     #rule-modal-btn,
     #problem-menu-toggle,
-    #problem-jump-btn {
+    #problem-jump-btn,
+    .secondary-btn {
         width: 100%;
         font-size: 18px;
         padding: 14px 18px;
@@ -310,7 +327,8 @@ h3 {
     #next-problem-btn,
     #rule-modal-btn,
     #problem-menu-toggle,
-    #problem-jump-btn {
+    #problem-jump-btn,
+    .secondary-btn {
         width: 100%;
         font-size: 18px;
         padding: 14px 18px;
@@ -395,6 +413,21 @@ h3 {
     padding: 12px 20px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.secondary-btn {
+    background-color: #E5E7EB;
+    color: #1F2937;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+    background-color: #D1D5DB;
 }
 
 /* マスの中に表示する数字 */
@@ -674,20 +707,23 @@ h3 {
     animation: gridShimmer 0.6s ease forwards;
     background-image: none;
     border-radius: 0;
+    gap: 2px;
 }
 
 @keyframes gridShimmer {
     0% {
         box-shadow: 0 0 0 rgba(255, 255, 255, 0);
         background-color: #DCDCDC;
+        gap: 6px;
     }
     33% {
         box-shadow: 0 0 22px 6px rgba(255, 255, 255, 0);
         background-color: #E0E0E0;
+        gap: 6px;
     }
     100% {
         box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-        background-color: #787C7E; /* same as black cells */
+        background-color: #333; /* same as black cells */
     }
 }
 .grid-cell.square {
