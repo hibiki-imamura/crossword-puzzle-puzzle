@@ -376,7 +376,6 @@ function openProblemMenu() {
     lockScroll();
     if (problemJumpInput) {
         problemJumpInput.classList.remove('invalid');
-        problemJumpInput.focus();
     }
 }
 
