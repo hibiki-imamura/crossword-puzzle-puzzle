@@ -320,6 +320,10 @@ h3 {
         font-size: clamp(15px, 4vw, 19px);
         padding: 10px 12px;
     }
+
+    #problem-random-btn {
+        background-color: #2563EB;
+    }
 }
 
 
@@ -515,6 +519,7 @@ h3 {
 .jump-form {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .jump-form input {
@@ -538,6 +543,7 @@ h3 {
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    flex: 1;
 }
 
 .menu-sections {

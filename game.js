@@ -26,6 +26,7 @@ const problemMenuClose = document.getElementById('problem-menu-close');
 const problemMenuSections = document.getElementById('problem-menu-sections');
 const problemJumpInput = document.getElementById('problem-jump-input');
 const problemJumpBtn = document.getElementById('problem-jump-btn');
+const problemRandomBtn = document.getElementById('problem-random-btn');
 let overlayLockCount = 0;
 let problemMenuButtons = [];
 let problemMenuSectionMeta = [];
@@ -400,6 +401,12 @@ function handleProblemJump() {
     problemJumpInput.value = '';
 }
 
+function jumpToRandomProblem() {
+    const randomIndex = Math.floor(Math.random() * PROBLEMS.length);
+    closeProblemMenu();
+    loadProblem(randomIndex);
+}
+
 function populateProblemMenu() {
     if (!problemMenuSections) return;
     problemMenuSections.innerHTML = '';
@@ -492,6 +499,9 @@ problemMenu.addEventListener('click', (event) => {
 });
 if (problemJumpBtn) {
     problemJumpBtn.addEventListener('click', handleProblemJump);
+}
+if (problemRandomBtn) {
+    problemRandomBtn.addEventListener('click', jumpToRandomProblem);
 }
 if (problemJumpInput) {
     problemJumpInput.addEventListener('keydown', (event) => {
