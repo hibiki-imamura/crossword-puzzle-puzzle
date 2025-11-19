@@ -101,14 +101,16 @@ h3 {
     grid-auto-rows: 1fr;
     aspect-ratio: 1 / 1;
     width: min(420px, 100%);
-    
-    /* 枠線をなくし、背景色と隙間を設定 (2048/Wordle風) */
     border: none;
-    background-color: #DCDCDC; /* 隙間の色になる */
-    padding: 8px; /* 盤面の外側の余白 */
-    gap: 8px; /* マスとマスの隙間 */
-    border-radius: 8px; /* 盤面全体の角丸 */
+    background-color: #DCDCDC;
+    background-image: linear-gradient(135deg, #DCDCDC, #C0C0C0);
+    background-size: 200% 200%;
+    padding: 8px;
+    gap: 8px;
+    border-radius: 8px;
+    transition: border-radius 0.3s ease;
 }
+
 
 .grid-cell {
     width: 100%;
@@ -131,6 +133,7 @@ h3 {
     color: transparent;
 
     border-radius: 5px; /* マスの角丸 */
+    transition: border-radius 0.6s ease;
     
     /* 色が変わるときの滑らかなアニメーション */
     transition: background-color 0.1s ease-in-out; 
@@ -666,3 +669,27 @@ h3 {
 
 
 
+
+#grid-container.animate-clear {
+    animation: gridShimmer 0.6s ease forwards;
+    background-image: none;
+    border-radius: 0;
+}
+
+@keyframes gridShimmer {
+    0% {
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+        background-color: #DCDCDC;
+    }
+    33% {
+        box-shadow: 0 0 22px 6px rgba(255, 255, 255, 0);
+        background-color: #E0E0E0;
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+        background-color: #787C7E; /* same as black cells */
+    }
+}
+.grid-cell.square {
+    border-radius: 0;
+}

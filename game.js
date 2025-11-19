@@ -341,6 +341,8 @@ function showResult(info) {
         nextBtn.style.display = 'block';
         retryBtn.style.display = 'none';
         markProblemCleared(currentProblemIndex);
+        gridContainer.classList.add('animate-clear');
+        document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.add('square'));
     } else {
         // 不正解
         clearMsgEl.textContent = "未完成";
@@ -358,6 +360,8 @@ function retry() {
     retryBtn.style.display = 'none';
     checkBtn.style.display = 'inline-block';
     clearMsgEl.textContent = "";
+    gridContainer.classList.remove('animate-clear');
+    document.querySelectorAll('.grid-cell.square').forEach(cell => cell.classList.remove('square'));
     
     // 数字を消す
     document.querySelectorAll('.clue-number').forEach(el => el.remove());
@@ -402,6 +406,8 @@ function loadProblem(index) {
     yokoObjEl.textContent = problem.yoko.join(', ');
     initializeBoard();
     updateProblemIndicators();
+    gridContainer.classList.remove('animate-clear');
+    document.querySelectorAll('.grid-cell.square').forEach(cell => cell.classList.remove('square'));
 }
 
 function openRuleModal() {
