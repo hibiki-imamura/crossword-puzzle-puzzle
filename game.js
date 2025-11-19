@@ -20,10 +20,12 @@ const ruleModal = document.getElementById('rule-modal');
 const ruleModalBtn = document.getElementById('rule-modal-btn');
 const ruleModalClose = document.getElementById('rule-modal-close');
 const problemNumberEl = document.getElementById('problem-number');
+const problemNumberWrapper = problemNumberEl?.parentElement;
 const problemMenu = document.getElementById('problem-menu');
 const problemMenuToggle = document.getElementById('problem-menu-toggle');
 const problemMenuClose = document.getElementById('problem-menu-close');
 const problemMenuSections = document.getElementById('problem-menu-sections');
+const completionRateEl = document.getElementById('completion-rate');
 const problemJumpInput = document.getElementById('problem-jump-input');
 const problemJumpBtn = document.getElementById('problem-jump-btn');
 const problemRandomBtn = document.getElementById('problem-random-btn');
@@ -132,11 +134,13 @@ function saveClearedProblems() {
 function markProblemCleared(index) {
     if (clearedProblems.has(index)) {
         updateProblemMenuEntry(index);
+        updateCompletionRate();
         return;
     }
     clearedProblems.add(index);
     saveClearedProblems();
     updateProblemMenuEntry(index);
+    updateCompletionRate();
 }
 
 function resetClearedProblems() {
@@ -147,6 +151,15 @@ function resetClearedProblems() {
         console.warn('Failed to reset cleared problems', err);
     }
     refreshProblemMenuEntries();
+    updateCompletionRate();
+}
+
+function updateCompletionRate() {
+    if (!completionRateEl) return;
+    const total = PROBLEMS.length;
+    const cleared = clearedProblems.size;
+    const percent = total > 0 ? ((cleared / total) * 100).toFixed(1) : '0.0';
+    completionRateEl.textContent = `${percent}%(${cleared}/${total})`;
 }
 
 function checkWhiteConnectivity(board) {
@@ -506,6 +519,7 @@ function updateProblemMenuEntry(index) {
 
 function refreshProblemMenuEntries() {
     problemMenuButtons.forEach((_, index) => updateProblemMenuEntry(index));
+    updateCompletionRate();
 }
 
 function populateProblemMenu() {
@@ -581,6 +595,14 @@ function populateProblemMenu() {
 function updateProblemIndicators() {
     if (problemNumberEl) {
         problemNumberEl.textContent = `第${currentProblemIndex + 1}問`;
+        if (clearedProblems.has(currentProblemIndex)) {
+            problemNumberEl.classList.add('cleared');
+        } else {
+            problemNumberEl.classList.remove('cleared');
+        }
+        if (problemNumberWrapper) {
+            problemNumberWrapper.classList.toggle('cleared', clearedProblems.has(currentProblemIndex));
+        }
     }
     refreshProblemMenuEntries();
     problemMenuSectionMeta.forEach(meta => {

@@ -9,12 +9,12 @@
 <body>
 
     <div class="global-controls">
+        <button id="rule-modal-btn">ルール説明</button>
         <button id="problem-menu-toggle" aria-label="問題一覧">☰</button>
     </div>
 
     <h1>クロスワードパズルパズル 5x5</h1>
     <div class="top-actions">
-        <button id="rule-modal-btn">ルール説明</button>
         <div class="problem-info">
             <span id="problem-number">第1問</span>
         </div>
@@ -67,6 +67,7 @@
                 <h2 id="problem-menu-title">問題一覧</h2>
                 <button id="problem-menu-close" class="modal-close" aria-label="閉じる">×</button>
             </div>
+            <p id="completion-rate" class="completion-rate"></p>
             <div class="menu-jump">
                 <label for="problem-jump-input">問題番号へジャンプ</label>
                 <div class="jump-form">
